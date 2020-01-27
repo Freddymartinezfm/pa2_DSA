@@ -117,6 +117,8 @@ template <class Record>
 Error_code AVL_tree<Record>::avl_delete(Binary_node<Record>* &sub_root,
            const Record &old_data, bool &shorter)
 {
+   std::cout << "delete called on AVL tree " << old_data << std::endl;
+   return success;
    
 }
 
@@ -133,6 +135,24 @@ Uses:
       
 */
 {
+   Binary_node<Record>* &left_tree = sub_root->left;
+   // case right_higher: sigle left rotation
+   //         O  ub --> subroot
+   //        /
+   //       O  lh  --> left_tree
+   //      /
+   //     O   
+
+   // switch (left_tree->get_balance){
+   // case right_higher:
+   //    /* code */
+   //    break;
+   
+   // default:
+   //    break;
+   // }
+
+
 }
 
 
@@ -226,6 +246,8 @@ Pre:  sub_root points to a subtree of the AVL_tree.
 Post: 
 */
 {
+   Binary_node<Record>* &left_tree = sub_root->left;
+
 }
 
 
