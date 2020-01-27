@@ -117,7 +117,14 @@ template <class Record>
 Error_code AVL_tree<Record>::avl_delete(Binary_node<Record>* &sub_root,
            const Record &old_data, bool &shorter)
 {
-   std::cout << "delete called on AVL tree " << old_data << std::endl;
+   Error_code result = success;
+   if (sub_root == nullptr){
+      std::cout << "delete called on AVL tree " << old_data << std::endl;
+      // no need set shorter to true
+      return not_present;
+   }
+
+
    return success;
    
 }
