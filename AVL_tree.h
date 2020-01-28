@@ -160,10 +160,7 @@ Uses:
       case equal_height:
       break;
 
-      default:
-
-      
-   }
+}
 
 }
 
