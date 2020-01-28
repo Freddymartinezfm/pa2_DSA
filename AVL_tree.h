@@ -119,12 +119,17 @@ Error_code AVL_tree<Record>::avl_delete(Binary_node<Record>* &sub_root,
 {
    Error_code result = success;
    if (sub_root == nullptr){
-      std::cout << "delete called on AVL tree " << old_data << std::endl;
-      // no need set shorter to true
-      return not_present;
+      std::cout << "Item not found : empty tree " << old_data << std::endl;
+      return not_present; // no need set shorter to true
+   } else if (old_data  < sub_root->data){
+      avl_delete(sub_root->left, old_data, shorter);
+   } else if (old_data  > sub_root->data){
+      avl_delete(sub_root->right, old_data, shorter);
+   } else if (old_data == sub_root->data){ // item to delete found 
+      std::cout << "Item to delete found " << std::endl;
+
+      // TODO switch on balance for rest of delete cases 
    }
-
-
    return success;
    
 }
@@ -142,22 +147,19 @@ Uses:
       
 */
 {
-   Binary_node<Record>* &left_tree = sub_root->left;
-   // case right_higher: sigle left rotation
-   //         O  ub --> subroot
-   //        /
-   //       O  lh  --> left_tree
-   //      /
-   //     O   
 
-   // switch (left_tree->get_balance){
-   // case right_higher:
-   //    /* code */
-   //    break;
-   
-   // default:
-   //    break;
-   // }
+   Binary_node<Record>* &left_tree = sub_root->left;
+
+   switch (sub_root->get_balance()){
+      // rotate right 
+      case left_higher:
+         sub_root->set_balance(equal_height);
+         left_tree->set_balance(equal_height);
+         rotate_right(sub_root);
+         break;
+         
+
+   }
 
 
 }
@@ -253,7 +255,24 @@ Pre:  sub_root points to a subtree of the AVL_tree.
 Post: 
 */
 {
-   Binary_node<Record>* &left_tree = sub_root->left;
+   Binary_node<Record>* left_tree = sub_root->left;
+   // case right_higher: sigle left rotation
+   //         O  ub --> subroot
+   //        /
+   //       O  lh  --> left_tree
+   //      /
+   //     O   
+// Post: sub_root is reset to point to its former right child, and the former
+//       sub_root node is the left child of the new sub_root node.
+
+
+   sub_root->left = left_tree->right;
+   left_tree->right = sub_root;
+   sub_root = left_tree;
+
+   
+
+   
 
 }
 
