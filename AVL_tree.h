@@ -148,20 +148,32 @@ Uses:
 */
 {
    Binary_node<Record>* &left_tree = sub_root->left;
-   switch (sub_root->get_balance()){
-      case left_higher:
+   switch (left_tree->get_balance()){
+      case left_higher: 
          sub_root->set_balance(equal_height);
          left_tree->set_balance(equal_height);
          rotate_right(sub_root);
          break;
-      case right_higher:
-      break;
-
-      case equal_height:
-      break;
-
-}
-
+      case right_higher: // tricky one 
+         Binary_node<Record> *right_tree = left_tree->right;
+         switch(right_tree->get_balance()){
+            case equal_height:
+               sub_root->set_balance(equal_height);
+               right_tree->set_balance(equal_height);
+               break;
+            case left_higher:
+               sub_root->set_balance(left_higher); // here too
+               right_tree->set_balance(left_higher); // not 100 sure, draw it out 
+               break;
+            case right_higher:
+               sub_root->set_balance(left_higher); // here too
+               right_tree->set_balance(left_higher); // not 100 sure, draw it out 
+            }
+            sub_root->set_balance(equal_height);
+            rotate_left(left_tree);
+            rotate_right(sub_root);
+            break;
+         }
 }
 
 
@@ -256,7 +268,7 @@ Post:
 */
 {
    Binary_node<Record>* left_tree = sub_root->left;
-   // case right_higher: sigle left rotation
+   // case left_higher: sigle right rotation
    //         O  ub --> subroot
    //        /
    //       O  lh  --> left_tree
@@ -264,16 +276,13 @@ Post:
    //     O   
 // Post: sub_root is reset to point to its former right child, and the former
 //       sub_root node is the left child of the new sub_root node.
-
-
-   sub_root->left = left_tree->right;
-   left_tree->right = sub_root;
-   sub_root = left_tree;
-
-   
-
-   
-
+   if (sub_root == nullptr || sub_root->left == nullptr){
+            cout << "WARNING: program error detected in rotate_left" << endl;
+   } else {
+      sub_root->left = left_tree->right; // y-s right child  to be child of z's left 
+      left_tree->right = sub_root;
+      sub_root = left_tree;
+   }
 }
 
 

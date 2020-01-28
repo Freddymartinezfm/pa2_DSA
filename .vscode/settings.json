@@ -5,6 +5,7 @@
 		"string": "cpp",
 		"string_view": "cpp",
 		"xlocnum": "cpp",
-		"xstring": "cpp"
+		"xstring": "cpp",
+		"iostream": "cpp"
 	}
 }
