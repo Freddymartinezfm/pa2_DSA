@@ -147,20 +147,23 @@ Uses:
       
 */
 {
-
    Binary_node<Record>* &left_tree = sub_root->left;
-
    switch (sub_root->get_balance()){
-      // rotate right 
       case left_higher:
          sub_root->set_balance(equal_height);
          left_tree->set_balance(equal_height);
          rotate_right(sub_root);
          break;
-         
+      case right_higher:
+      break;
 
+      case equal_height:
+      break;
+
+      default:
+
+      
    }
-
 
 }
 
