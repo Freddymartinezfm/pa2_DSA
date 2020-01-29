@@ -78,7 +78,7 @@ Uses: Methods of struct AVL_node; functions avl_insert
       result = avl_insert(sub_root->left, new_data, taller);
       if (taller == true)
 		switch (sub_root->get_balance()) {
-         case left_higher: //lh before insertion, now unbalanced
+         case left_higher: //lh before insertion, now unbalanced, previous node says it was left_higher
             left_balance(sub_root);
             taller = false;       
             break;
@@ -149,31 +149,38 @@ Uses:
 {
    Binary_node<Record>* &left_tree = sub_root->left;
    switch (left_tree->get_balance()){
+      case equal_height:
+         // node would have already been unbalanced
+         std::cout << "WARNING: If you see this in an insertion, program error is detected in right_balance" << std::endl;
+         // setting to the height, that it shold be and rotating to the left
+         left_tree->set_balance(left_higher);
+         rotate_left(sub_root);
+         break;
       case left_higher: 
-         sub_root->set_balance(equal_height);
+         sub_root->set_balance(equal_height); // review here, equal after the rotation 
          left_tree->set_balance(equal_height);
          rotate_right(sub_root);
          break;
       case right_higher: // tricky one 
          Binary_node<Record> *right_tree = left_tree->right;
-         switch(right_tree->get_balance()){
+         switch(right_tree->get_balance()){ // change to right_tree 
             case equal_height:
+               left_tree->set_balance(equal_height);
                sub_root->set_balance(equal_height);
-               right_tree->set_balance(equal_height);
                break;
             case left_higher:
-               sub_root->set_balance(left_higher); // here too
-               right_tree->set_balance(left_higher); // not 100 sure, draw it out 
+               left_tree->set_balance(left_higher); // here too
+               sub_root->set_balance(left_higher); // not 100 sure, draw it out 
                break;
             case right_higher:
-               sub_root->set_balance(left_higher); // here too
-               right_tree->set_balance(left_higher); // not 100 sure, draw it out 
+               left_tree->set_balance(left_higher); // here too
+               sub_root->set_balance(left_higher); // not 100 sure, draw it out 
             }
-            sub_root->set_balance(equal_height);
+            right_tree->set_balance(equal_height);
             rotate_left(left_tree);
             rotate_right(sub_root);
-            break;
-         }
+            
+   }
 }
 
 
@@ -205,6 +212,7 @@ Uses: Methods of struct AVL_node;
       right_tree->set_balance(left_higher);
       rotate_left(sub_root);
       break;
+
    // case left_higher: double rotation left
    // O ub --> sub_root
    //  \
@@ -252,7 +260,7 @@ Post: sub_root is reset to point to its former right child, and the former
       cout << "WARNING: program error detected in rotate_left" << endl;
    else {
       Binary_node<Record> *right_tree = sub_root->right;
-      sub_root->right = right_tree->left;
+      sub_root->right = right_tree->left; 
       right_tree->left = sub_root;
       sub_root = right_tree;
    }
@@ -268,14 +276,7 @@ Post:
 */
 {
    Binary_node<Record>* left_tree = sub_root->left;
-   // case left_higher: sigle right rotation
-   //         O  ub --> subroot
-   //        /
-   //       O  lh  --> left_tree
-   //      /
-   //     O   
-// Post: sub_root is reset to point to its former right child, and the former
-//       sub_root node is the left child of the new sub_root node.
+  
    if (sub_root == nullptr || sub_root->left == nullptr){
             cout << "WARNING: program error detected in rotate_left" << endl;
    } else {
