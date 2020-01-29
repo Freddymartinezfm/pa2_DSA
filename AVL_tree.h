@@ -8,11 +8,13 @@ public:
 protected:
    Error_code avl_insert(Binary_node<Record>* &sub_root, const Record &new_data, bool &taller);
    Error_code avl_delete(Binary_node<Record>* &sub_root, const Record &old_data, bool &shorter);
+   //Error_code pre_delete(Binary_node<Record>* &sub_root, const Record &old_data, bool &shorter);
    //void avl_remove_root(Binary_node<Record>* &sub_root, bool &shorter, Record &predecessor, Binary_node<Record>* &to_delete);
    void left_balance(Binary_node<Record>* &sub_root);
    void right_balance(Binary_node<Record>* &sub_root);
    void rotate_left(Binary_node<Record>* &sub_root);
    void rotate_right(Binary_node<Record>* &sub_root);
+   
 };
 
 
@@ -119,30 +121,49 @@ Error_code AVL_tree<Record>::avl_delete(Binary_node<Record>* &sub_root, const Re
    Error_code result = success;
    int count;
 
+
+   // empty tree - delete
    if (sub_root == nullptr){
       std::cout << "Item not found : empty tree " << old_data << std::endl;
       shorter = false;
       result =  not_present; // no need set shorter to true if tree is empty
-   } 
+   } else if (old_data == sub_root->data){
+      std::cout << "Item found : " << old_data << std::endl;
+      // leaf node - no children
+      if (nullptr ==  sub_root->left && sub_root->right == nullptr){
+         std::cout << "leaf node. " << std::endl;
+         delete sub_root;
+         sub_root = nullptr;
+         shorter = true;
+      // node has one child
+      } else if (nullptr ==  sub_root->left){ //sub_root->right == nullptr not possible due to restructure
+         
+         Binary_node<Record> *right_tree = sub_root->right;
+         while (right_tree->left != nullptr){
+            right_tree = right_tree->left;
+         }
+
+         sub_root->right = nullptr;
+         avl_insert(right_tree, old_data ,shorter);
+         // swap with sub_root
+      } else {
+      //node has two children
+         std::cout << "node has two children. " << std::endl;
+         // predessecor || successor delete
+      }
+
+   }
    
    else if (old_data  < sub_root->data){
       // delete from LST 
       std::cout << "moving to sub_root left. " << std::endl;
-      result =  avl_delete(sub_root->left, old_data, shorter);
 
-   // TODO switch on balance for rest of delete cases for RST, and LST
+      result =  avl_delete(sub_root->left, old_data, shorter);
    } else if (old_data  > sub_root->data) {
       // delete from RST
        std::cout << "moving to sub_root right. " << std::endl;
-       result = avl_delete(sub_root->right, old_data, shorter);
-       // after the recursion, the node has been deleted and we need to check shorter for restructure
-      
-   } else if (old_data == sub_root->data) {
-      // item to delete has been found
-      std::cout << "Item found";
-
-
-   }
+       result = avl_delete(sub_root->right, old_data, shorter);      
+   } 
    return success;
    
 }
@@ -179,18 +200,18 @@ Uses: rotate_left and rotate_right
 
       case right_higher: // double 
          Binary_node<Record> *sub_tree = left_tree->right;
-         switch(sub_tree->get_balance()){ // changed to right_tree 
+         switch(sub_tree->get_balance()){ 
          case equal_height:
             sub_root->set_balance(equal_height);
             left_tree->set_balance(equal_height);
             break;
          case left_higher:
-            sub_root->set_balance(left_higher); // not 100 sure, draw it out 
-            left_tree->set_balance(left_higher); // here too
+            sub_root->set_balance(left_higher); 
+            left_tree->set_balance(left_higher);
             break;
          case right_higher:
-            sub_root->set_balance(equal_height); // change to equal height 
-            left_tree->set_balance(left_higher); // here too
+            sub_root->set_balance(equal_height); 
+            left_tree->set_balance(left_higher);
             break;
       }
          sub_tree->set_balance(equal_height);
