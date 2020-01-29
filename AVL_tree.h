@@ -42,6 +42,7 @@ Post: If a Record with a key matching that of target belongs to the
       is removed from the tree.  Otherwise, a code of not_present is returned.
 Uses: Function search_and_destroy
 */
+
 {
    bool shorter;
    return avl_delete(this->root, old_data, shorter);
@@ -163,7 +164,7 @@ Uses:
          break;
       case right_higher: // tricky one 
          Binary_node<Record> *right_tree = left_tree->right;
-         switch(right_tree->get_balance()){ // change to right_tree 
+         switch(right_tree->get_balance()){ // changed to right_tree 
             case equal_height:
                left_tree->set_balance(equal_height);
                sub_root->set_balance(equal_height);
