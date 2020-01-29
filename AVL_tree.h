@@ -114,22 +114,35 @@ Uses: Methods of struct AVL_node; functions avl_insert
 
 
 template <class Record>
-Error_code AVL_tree<Record>::avl_delete(Binary_node<Record>* &sub_root,
-           const Record &old_data, bool &shorter)
-{
-   Error_code result = success;
-   // if (sub_root == nullptr){
-   //    std::cout << "Item not found : empty tree " << old_data << std::endl;
-   //    return not_present; // no need set shorter to true
-   // } else if (old_data  < sub_root->data){
-   //    avl_delete(sub_root->left, old_data, shorter);
-   // } else if (old_data  > sub_root->data){
-   //    avl_delete(sub_root->right, old_data, shorter);
-   // } else if (old_data == sub_root->data){ // item to delete found 
-   //    std::cout << "Item to delete found " << std::endl;
+Error_code AVL_tree<Record>::avl_delete(Binary_node<Record>* &sub_root, const Record &old_data, bool &shorter) {
 
-   //    // TODO switch on balance for rest of delete cases 
-   // }
+   Error_code result = success;
+   int count;
+
+   if (sub_root == nullptr){
+      std::cout << "Item not found : empty tree " << old_data << std::endl;
+      shorter = false;
+      result =  not_present; // no need set shorter to true if tree is empty
+   } 
+   
+   else if (old_data  < sub_root->data){
+      // delete from LST 
+      std::cout << "moving to sub_root left. " << std::endl;
+      result =  avl_delete(sub_root->left, old_data, shorter);
+
+   // TODO switch on balance for rest of delete cases for RST, and LST
+   } else if (old_data  > sub_root->data) {
+      // delete from RST
+       std::cout << "moving to sub_root right. " << std::endl;
+       result = avl_delete(sub_root->right, old_data, shorter);
+       // after the recursion, the node has been deleted and we need to check shorter for restructure
+      
+   } else if (old_data == sub_root->data) {
+      // item to delete has been found
+      std::cout << "Item found";
+
+
+   }
    return success;
    
 }
@@ -143,7 +156,7 @@ void AVL_tree<Record>::left_balance(Binary_node<Record>* &sub_root)
 Pre:  sub_root points to a subtree of an AVL_tree that
       is doubly unbalanced on the .
 Post: The AVL properties have been restored to the subtree.
-Uses: gh,jhkbhj
+Uses: rotate_left and rotate_right
       
 */
 {
