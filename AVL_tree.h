@@ -6,7 +6,6 @@ public:
    Error_code insert(const Record &new_data);
    Error_code remove(const Record &old_data);
 protected:
-   //  Auxiliary functions
    Error_code avl_insert(Binary_node<Record>* &sub_root, const Record &new_data, bool &taller);
    Error_code avl_delete(Binary_node<Record>* &sub_root, const Record &old_data, bool &shorter);
    //void avl_remove_root(Binary_node<Record>* &sub_root, bool &shorter, Record &predecessor, Binary_node<Record>* &to_delete);
@@ -29,7 +28,6 @@ Uses: avl_insert.
 */
 {
    bool taller;
-   
    return avl_insert(this->root, new_data, taller);
 }
 
@@ -87,11 +85,11 @@ Uses: Methods of struct AVL_node; functions avl_insert
 		 case equal_height: 
             sub_root->set_balance(left_higher);
             break;  
-         case right_higher:
-            sub_root->set_balance(equal_height);
-            taller = false;
-            break;
-         }
+      case right_higher:
+         sub_root->set_balance(equal_height);
+         taller = false;            
+         break;
+      }
    }
    //insert to RST
    else {                                     
@@ -120,18 +118,18 @@ Error_code AVL_tree<Record>::avl_delete(Binary_node<Record>* &sub_root,
            const Record &old_data, bool &shorter)
 {
    Error_code result = success;
-   if (sub_root == nullptr){
-      std::cout << "Item not found : empty tree " << old_data << std::endl;
-      return not_present; // no need set shorter to true
-   } else if (old_data  < sub_root->data){
-      avl_delete(sub_root->left, old_data, shorter);
-   } else if (old_data  > sub_root->data){
-      avl_delete(sub_root->right, old_data, shorter);
-   } else if (old_data == sub_root->data){ // item to delete found 
-      std::cout << "Item to delete found " << std::endl;
+   // if (sub_root == nullptr){
+   //    std::cout << "Item not found : empty tree " << old_data << std::endl;
+   //    return not_present; // no need set shorter to true
+   // } else if (old_data  < sub_root->data){
+   //    avl_delete(sub_root->left, old_data, shorter);
+   // } else if (old_data  > sub_root->data){
+   //    avl_delete(sub_root->right, old_data, shorter);
+   // } else if (old_data == sub_root->data){ // item to delete found 
+   //    std::cout << "Item to delete found " << std::endl;
 
-      // TODO switch on balance for rest of delete cases 
-   }
+   //    // TODO switch on balance for rest of delete cases 
+   // }
    return success;
    
 }
@@ -145,7 +143,7 @@ void AVL_tree<Record>::left_balance(Binary_node<Record>* &sub_root)
 Pre:  sub_root points to a subtree of an AVL_tree that
       is doubly unbalanced on the .
 Post: The AVL properties have been restored to the subtree.
-Uses: 
+Uses: gh,jhkbhj
       
 */
 {
@@ -156,8 +154,8 @@ Uses:
          // node would have already been unbalanced
          std::cout << "WARNING: If you see this in an insertion, program error is detected in right_balance" << std::endl;
          // setting to the height, that it shold be and rotating to the left
-         //left_tree->set_balance(left_higher);
-         //rotate_right(sub_root);
+         left_tree->set_balance(right_higher);
+         rotate_right(sub_root);
          break;
 
       case left_higher: 
@@ -169,26 +167,26 @@ Uses:
       case right_higher: // double 
          Binary_node<Record> *sub_tree = left_tree->right;
          switch(sub_tree->get_balance()){ // changed to right_tree 
-            case equal_height:
-               left_tree->set_balance(equal_height);
-               sub_root->set_balance(equal_height);
-               break;
-            case left_higher:
-               left_tree->set_balance(left_higher); // here too
-               sub_root->set_balance(left_higher); // not 100 sure, draw it out 
-               break;
-            case right_higher:
-               left_tree->set_balance(left_higher); // here too
-               sub_root->set_balance(left_higher); // not 100 sure, draw it out 
-               break;
-            
+         case equal_height:
+            sub_root->set_balance(equal_height);
             left_tree->set_balance(equal_height);
-            rotate_left(left_tree);
-            rotate_right(sub_root);
-         }
             break;
-            
+         case left_higher:
+            sub_root->set_balance(left_higher); // not 100 sure, draw it out 
+            left_tree->set_balance(left_higher); // here too
+            break;
+         case right_higher:
+            sub_root->set_balance(equal_height); // change to equal height 
+            left_tree->set_balance(left_higher); // here too
+            break;
+      }
+         sub_tree->set_balance(equal_height);
+         rotate_left(left_tree);
+         rotate_right(sub_root);  
+         break; 
    }
+      
+      
 }
 
 
@@ -287,9 +285,9 @@ Post:
 {
    Binary_node<Record>* left_tree = sub_root->left;
   
-   if (sub_root == nullptr || sub_root->left == nullptr){
-            cout << "WARNING: program error detected in rotate_left" << endl;
-   } else {
+   if (sub_root == NULL || sub_root->left == NULL)
+         cout << "WARNING: program error detected in rotate_left" << endl;
+    else {
       sub_root->left = left_tree->right; // y-s right child  to be child of z's left 
       left_tree->right = sub_root;
       sub_root = left_tree;
