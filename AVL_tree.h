@@ -117,29 +117,30 @@ template <class Record>
 Error_code AVL_tree<Record>::avl_delete(Binary_node<Record>* &sub_root, const Record &old_data, bool &shorter) {
 
    Error_code result = success;
+   int count;
+
    if (sub_root == nullptr){
       std::cout << "Item not found : empty tree " << old_data << std::endl;
       shorter = false;
-      return not_present; // no need set shorter to true
+      result =  not_present; // no need set shorter to true if tree is empty
    } 
    
    else if (old_data  < sub_root->data){
       // delete from LST 
-      std::cout << "moving to sub_root left";
-      avl_delete(sub_root->left, old_data, shorter);
-      
+      std::cout << "moving to sub_root left. " << std::endl;
+      result =  avl_delete(sub_root->left, old_data, shorter);
 
-
-   // TODO switch on balance for rest of delete cases 
+   // TODO switch on balance for rest of delete cases for RST, and LST
    } else if (old_data  > sub_root->data) {
       // delete from RST
-       std::cout << "moving to sub_root right";
-       avl_delete(sub_root->right, old_data, shorter);
+       std::cout << "moving to sub_root right. " << std::endl;
+       result = avl_delete(sub_root->right, old_data, shorter);
        // after the recursion, the node has been deleted and we need to check shorter for restructure
       
-   } else {
+   } else if (old_data == sub_root->data) {
       // item to delete has been found
-      std::cout << "moving to sub_root left";
+      std::cout << "Item found";
+
 
    }
    return success;
