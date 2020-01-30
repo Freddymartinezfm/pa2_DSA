@@ -123,17 +123,15 @@ Error_code AVL_tree<Record>::avl_delete(Binary_node<Record>* &sub_root, const Re
       shorter = false;
       result = not_present;
    } else if (target == sub_root->data){
+
       if (sub_root->left != nullptr && sub_root->right != nullptr){
          Binary_node<Record> *to_delete;
-
-        to_delete = sub_root->left;
-        while (to_delete->right != nullptr){
-           to_delete = to_delete->right;
+         to_delete = sub_root->left;
+         while (to_delete->right != nullptr){
+            to_delete = to_delete->right;
          sub_root->data = to_delete->data;
-        avl_delete(sub_root->left, sub_root->data, shorter);
-         }
-
-
+         avl_delete(sub_root->left, sub_root->data, shorter);
+        }
       } else if (sub_root->left == nullptr){
          shorter = true;
          Binary_node<Record> *to_delete = sub_root;
@@ -158,7 +156,15 @@ Error_code AVL_tree<Record>::avl_delete(Binary_node<Record>* &sub_root, const Re
                //sub_root->set_balance(equal_height);
                right_balance(sub_root);
                break;
-               // the other two, setting the balance on sub root 
+               // the other two, setting the balance on sub root
+            case equal_height:
+               std::cout << "balance is equal height";
+               sub_root->set_balance(right_higher); // delete from LST and node was equal height, just right higher 
+               break;
+            case left_higher:
+               std::cout << "balance is left";
+               sub_root->set_balance(equal_height);
+               break;
          }
 
       }
@@ -172,7 +178,7 @@ Error_code AVL_tree<Record>::avl_delete(Binary_node<Record>* &sub_root, const Re
        if (shorter == true){
          switch (sub_root->get_balance()){
             case left_higher:
-               //sub_root->set_balance(equal_height);
+               sub_root->set_balance(equal_height);
                left_balance(sub_root);
                break;
          }
