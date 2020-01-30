@@ -4,10 +4,10 @@ template <class Record>
 class AVL_tree: public Search_tree<Record> {
 public:
    Error_code insert(const Record &new_data);
-   Error_code remove(const Record &old_data);
+   Error_code remove(const Record &target);
 protected:
    Error_code avl_insert(Binary_node<Record>* &sub_root, const Record &new_data, bool &taller);
-   Error_code avl_delete(Binary_node<Record>* &sub_root, const Record &old_data, bool &shorter);
+   Error_code avl_delete(Binary_node<Record>* &sub_root, const Record &target, bool &shorter);
    //Error_code pre_delete(Binary_node<Record>* &sub_root, const Record &old_data, bool &shorter);
    //void avl_remove_root(Binary_node<Record>* &sub_root, bool &shorter, Record &predecessor, Binary_node<Record>* &to_delete);
    void left_balance(Binary_node<Record>* &sub_root);
@@ -35,7 +35,7 @@ Uses: avl_insert.
 
 
 template <class Record>
-Error_code AVL_tree<Record>::remove(const Record &old_data)
+Error_code AVL_tree<Record>::remove(const Record &target)
 /*
 Post: If a Record with a key matching that of target belongs to the
       AVL_tree, a code of success is returned, and the corresponding node
@@ -45,7 +45,7 @@ Uses: Function search_and_destroy
 
 {
    bool shorter;
-   return avl_delete(this->root, old_data, shorter);
+   return avl_delete(this->root, target, shorter);
 }
 
 
@@ -84,13 +84,13 @@ Uses: Methods of struct AVL_node; functions avl_insert
             left_balance(sub_root);
             taller = false;       
             break;
-		 case equal_height: 
+		   case equal_height: 
             sub_root->set_balance(left_higher);
             break;  
-      case right_higher:
-         sub_root->set_balance(equal_height);
-         taller = false;            
-         break;
+         case right_higher:
+            sub_root->set_balance(equal_height);
+            taller = false;            
+            break;
       }
    }
    //insert to RST
@@ -116,56 +116,70 @@ Uses: Methods of struct AVL_node; functions avl_insert
 
 
 template <class Record>
-Error_code AVL_tree<Record>::avl_delete(Binary_node<Record>* &sub_root, const Record &old_data, bool &shorter) {
+Error_code AVL_tree<Record>::avl_delete(Binary_node<Record>* &sub_root, const Record &target, bool &shorter) {
 
    Error_code result = success;
-   int count;
-
-
-   // empty tree - delete
    if (sub_root == nullptr){
-      std::cout << "Item not found : empty tree " << old_data << std::endl;
       shorter = false;
-      result =  not_present; // no need set shorter to true if tree is empty
-   } else if (old_data == sub_root->data){
-      std::cout << "Item found : " << old_data << std::endl;
-      // leaf node - no children
-      if (nullptr ==  sub_root->left && sub_root->right == nullptr){
-         std::cout << "leaf node. " << std::endl;
-         delete sub_root;
-         sub_root = nullptr;
-         shorter = true;
-      // node has one child
-      } else if (nullptr ==  sub_root->left){ //sub_root->right == nullptr not possible due to restructure
-         
-         Binary_node<Record> *right_tree = sub_root->right;
-         while (right_tree->left != nullptr){
-            right_tree = right_tree->left;
+      result = not_present;
+   } else if (target == sub_root->data){
+      if (sub_root->left != nullptr && sub_root->right != nullptr){
+         Binary_node<Record> *to_delete;
+
+        to_delete = sub_root->left;
+        while (to_delete->right != nullptr){
+           to_delete = to_delete->right;
+         sub_root->data = to_delete->data;
+        avl_delete(sub_root->left, sub_root->data, shorter);
          }
 
-         sub_root->right = nullptr;
-         avl_insert(right_tree, old_data ,shorter);
-         // swap with sub_root
-      } else {
-      //node has two children
-         std::cout << "node has two children. " << std::endl;
-         // predessecor || successor delete
+
+      } else if (sub_root->left == nullptr){
+         shorter = true;
+         Binary_node<Record> *to_delete = sub_root;
+         sub_root = sub_root->right;
+         delete to_delete;
+         to_delete = nullptr;
+
+      } else if (sub_root->right == nullptr) {
+        shorter = true;
+         Binary_node<Record> *to_delete = sub_root;
+         sub_root = sub_root->left;
+         delete to_delete;
+         to_delete = nullptr;
+      }
+   
+   } else if (target < sub_root->data){
+      avl_delete(sub_root->left, target, shorter);
+
+      if (shorter == true){
+         switch (sub_root->get_balance()){
+            case right_higher:
+               //sub_root->set_balance(equal_height);
+               right_balance(sub_root);
+               break;
+               // the other two, setting the balance on sub root 
+         }
+
       }
 
-   }
-   
-   else if (old_data  < sub_root->data){
-      // delete from LST 
-      std::cout << "moving to sub_root left. " << std::endl;
 
-      result =  avl_delete(sub_root->left, old_data, shorter);
-   } else if (old_data  > sub_root->data) {
-      // delete from RST
-       std::cout << "moving to sub_root right. " << std::endl;
-       result = avl_delete(sub_root->right, old_data, shorter);      
+
+
+   
+   } else if (target  > sub_root->data) {
+       avl_delete(sub_root->right, target, shorter);
+       if (shorter == true){
+         switch (sub_root->get_balance()){
+            case left_higher:
+               //sub_root->set_balance(equal_height);
+               left_balance(sub_root);
+               break;
+         }
+
+      }
    } 
    return success;
-   
 }
 
 
