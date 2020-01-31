@@ -139,8 +139,8 @@ Error_code AVL_tree<Record>::avl_delete(Binary_node<Record>* &sub_root, const Re
                if (sub_root->get_balance() == equal_height) shorter = true;               
                break;
             case equal_height:
-               //sub_root->set_balance(right_higher);
-               shorter = true;
+               sub_root->set_balance(right_higher);
+               shorter = false;
               
                break;
             case left_higher:
@@ -179,8 +179,9 @@ Error_code AVL_tree<Record>::avl_delete(Binary_node<Record>* &sub_root, const Re
                if (sub_root->get_balance() == equal_height) shorter = true;               
                break;
             case equal_height:
-               //sub_root->set_balance(right_higher);
-               shorter = true;
+               sub_root->set_balance(right_higher);
+               shorter = false;
+               //shorter = true;
               
                break;
             case left_higher:
@@ -206,8 +207,8 @@ Error_code AVL_tree<Record>::avl_delete(Binary_node<Record>* &sub_root, const Re
                break;
             case equal_height:
                // after deleting a node from RST, unbalanced now?
-               //sub_root->set_balance(left_higher);
-               shorter = true;
+               sub_root->set_balance(left_higher);
+               shorter = false;
                
                break;
          }
