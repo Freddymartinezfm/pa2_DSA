@@ -1,0 +1,41 @@
+// copy just in case 
+target < sub_root->data 
+ 
+ // if (shorter == true){
+      //    switch (sub_root->get_balance()){
+      //       case right_higher:
+      //          //sub_root->set_balance(right_higher);
+      //          right_balance(sub_root);
+      //          break;
+      //       case equal_height:
+      //          sub_root->set_balance(right_higher);
+      //          break;
+      //       case left_higher:
+      //          sub_root->set_balance(equal_height);
+      //          shorter = false;
+
+      //          break;
+      //    }
+      // }
+
+
+
+//> 
+ //  if (shorter == true){
+      //    switch (sub_root->get_balance()){
+      //       case left_higher:
+      //          //sub_root->set_balance(equal_height);
+      //          left_balance(sub_root);
+      //          break;
+      //       case right_higher:
+      //          sub_root->set_balance(equal_height);
+      //          // shorter = false;
+      //          break;
+      //       case equal_height:
+      //          sub_root->set_balance(left_higher);
+      //          shorter = false;
+                
+      //          break;
+      //    }
+
+      // }
