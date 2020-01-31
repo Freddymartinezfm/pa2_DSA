@@ -46,7 +46,7 @@ Uses: Function search_and_destroy
 {
    bool shorter;
    return avl_delete(this->root, target, shorter);
-}
+ }
 
 
 template <class Record>
@@ -123,63 +123,92 @@ Error_code AVL_tree<Record>::avl_delete(Binary_node<Record>* &sub_root, const Re
       shorter = false;
       result = not_present;
    } else if (target == sub_root->data){
+         if (sub_root->left != nullptr && sub_root->right != nullptr){
+            Binary_node<Record> *to_delete = sub_root->left;
+            shorter = true;
+            while (to_delete->right != nullptr)
+               to_delete = to_delete->right;
+            sub_root->data = to_delete->data;
+            avl_delete(sub_root->left, sub_root->data, shorter);
 
-      if (sub_root->left != nullptr && sub_root->right != nullptr){
-         Binary_node<Record> *to_delete;
-         to_delete = sub_root->left;
-         while (to_delete->right != nullptr){
-            to_delete = to_delete->right;
-         sub_root->data = to_delete->data;
-         avl_delete(sub_root->left, sub_root->data, shorter);
-        }
-      } else if (sub_root->left == nullptr){
-         shorter = true;
-         Binary_node<Record> *to_delete = sub_root;
-         sub_root = sub_root->right;
-         delete to_delete;
-         to_delete = nullptr;
+            if (shorter == true){
+            switch (sub_root->get_balance()){
+            case right_higher:
+               //  test
+               right_balance(sub_root);
+               if (sub_root->get_balance() == equal_height) shorter = true;               
+               break;
+            case equal_height:
+               //sub_root->set_balance(right_higher);
+               shorter = true;
+              
+               break;
+            case left_higher:
+               sub_root->set_balance(equal_height);
+               shorter = true;
+               
+               break;
+            }
+         }
 
-      } else if (sub_root->right == nullptr) {
-        shorter = true;
-         Binary_node<Record> *to_delete = sub_root;
-         sub_root = sub_root->left;
-         delete to_delete;
-         to_delete = nullptr;
-      }
+            
+         } else if (sub_root->left == nullptr){
+            shorter = true;
+            Binary_node<Record> *to_delete = sub_root;
+            sub_root = sub_root->right;
+            delete to_delete;
+            to_delete = nullptr;
+         } else if (sub_root->right == nullptr) {
+            shorter = true;
+            Binary_node<Record> *to_delete = sub_root;
+            sub_root = sub_root->left;
+            delete to_delete;
+            to_delete = nullptr;
+         }
    
    } else if (target < sub_root->data){
       avl_delete(sub_root->left, target, shorter);
 
+      std::cout << "recursion finished in left tree : balance checking here " << std::endl;
+
       if (shorter == true){
          switch (sub_root->get_balance()){
             case right_higher:
-               //sub_root->set_balance(equal_height);
+               //  test
                right_balance(sub_root);
+               if (sub_root->get_balance() == equal_height) shorter = true;               
                break;
-               // the other two, setting the balance on sub root
             case equal_height:
-               std::cout << "balance is equal height";
-               sub_root->set_balance(right_higher); // delete from LST and node was equal height, just right higher 
+               //sub_root->set_balance(right_higher);
+               shorter = true;
+              
                break;
             case left_higher:
-               std::cout << "balance is left";
                sub_root->set_balance(equal_height);
+               shorter = true;
+               
                break;
          }
-
       }
-
-
-
-
-   
    } else if (target  > sub_root->data) {
        avl_delete(sub_root->right, target, shorter);
+      std::cout << "recursion finished in right tree : balance checking here " << std::endl;
+
        if (shorter == true){
          switch (sub_root->get_balance()){
             case left_higher:
-               sub_root->set_balance(equal_height);
                left_balance(sub_root);
+               if (sub_root->get_balance() == equal_height) shorter = true;
+               break;
+            case right_higher:
+               sub_root->set_balance(equal_height);
+               shorter = true;
+               break;
+            case equal_height:
+               // after deleting a node from RST, unbalanced now?
+               //sub_root->set_balance(left_higher);
+               shorter = true;
+               
                break;
          }
 
