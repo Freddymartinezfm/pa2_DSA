@@ -125,6 +125,7 @@ Error_code AVL_tree<Record>::avl_delete(Binary_node<Record>* &sub_root, const Re
       result = not_present;
    } else if (target == sub_root->data){
          if (sub_root->left != nullptr && sub_root->right != nullptr){
+            std::cout << "finding successor " << std::endl;
             // Binary_node<Record> *to_delete = sub_root->left;
             // shorter = true;
             
@@ -144,24 +145,53 @@ Error_code AVL_tree<Record>::avl_delete(Binary_node<Record>* &sub_root, const Re
             }
             sub_root->data = to_delete->data;
             
-            std::cout << "recursion going to right tree" << std::endl;
+            //std::cout << "recursion going to right tree" << std::endl;
             avl_delete(sub_root->right, sub_root->data, shorter);
 
-            std::cout << "balance checking here " << std::endl;
+            //std::cout << "balance checking here " << std::endl;
+      //          if (shorter == true){
+      //    switch (sub_root->get_balance()){
+      //       case left_higher:
+      //          left_balance(sub_root);
+      //          if (sub_root->get_balance() == equal_height) {
+      //             shorter = true;
+      //          }
+      //          break;
+      //       case right_higher:
+      //          sub_root->set_balance(equal_height);
+      //          shorter = true;
+      //          break;
+      //       case equal_height:
+      //          // after deleting a node from RST, unbalanced now?
+      //          sub_root->set_balance(left_higher);
+      //          shorter = false; // may need to remove and let it be true
+               
+      //          break;
+      //    }
+
+      // }
+            
 
             if (shorter == true){
             switch (sub_root->get_balance()){
+               // check code here for after deleting a successor 
+               // regular
+               // after rebalnce
+               // multiple rebalnace 
             case right_higher:
                right_balance(sub_root);
-               if (sub_root->get_balance() == equal_height) shorter = true;               
+               if (sub_root->get_balance() == equal_height) shorter = true;  
+               shorter = false;             
                break;
             case equal_height:
-               sub_root->set_balance(right_higher);
+               sub_root->set_balance(left_higher);
                shorter = false;
               
                break;
             case left_higher:
                sub_root->set_balance(equal_height);
+               left_balance(sub_root);
+               if (sub_root->get_balance() == equal_height) shorter = true; 
                shorter = true;
                
                break;
@@ -184,17 +214,21 @@ Error_code AVL_tree<Record>::avl_delete(Binary_node<Record>* &sub_root, const Re
          }
    
    } else if (target < sub_root->data){
-      std::cout << "recursion going to left tree" << std::endl;
+      //std::cout << "recursion going to left tree" << std::endl;
       avl_delete(sub_root->left, target, shorter);
 
-      std::cout << "balance checking here " << std::endl;
+      //std::cout << "balance checking here " << std::endl;
 
       if (shorter == true){
          switch (sub_root->get_balance()){
             case right_higher:
                //  test
                right_balance(sub_root);
-               if (sub_root->get_balance() == equal_height) shorter = true;               
+               if (sub_root->get_balance() == equal_height) {
+                  shorter = true;
+               } else {
+                  shorter = false;
+               }               
                break;
             case equal_height:
                sub_root->set_balance(right_higher);
@@ -211,7 +245,7 @@ Error_code AVL_tree<Record>::avl_delete(Binary_node<Record>* &sub_root, const Re
       }
    } else if (target  > sub_root->data) {
       
-      std::cout << "recursion going to right tree" << std::endl;
+      //std::cout << "recursion going to right tree" << std::endl;
        avl_delete(sub_root->right, target, shorter);
 
        std::cout << "balance checking here " << std::endl;
@@ -220,7 +254,12 @@ Error_code AVL_tree<Record>::avl_delete(Binary_node<Record>* &sub_root, const Re
          switch (sub_root->get_balance()){
             case left_higher:
                left_balance(sub_root);
-               if (sub_root->get_balance() == equal_height) shorter = true;
+               if (sub_root->get_balance() == equal_height) {
+                  shorter = true;
+               } else {
+                  shorter = false;
+               }
+
                break;
             case right_higher:
                sub_root->set_balance(equal_height);
