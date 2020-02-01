@@ -8,13 +8,12 @@ public:
 protected:
    Error_code avl_insert(Binary_node<Record>* &sub_root, const Record &new_data, bool &taller);
    Error_code avl_delete(Binary_node<Record>* &sub_root, const Record &target, bool &shorter);
-   //Error_code pre_delete(Binary_node<Record>* &sub_root, const Record &old_data, bool &shorter);
+   //bool check(Binary_node<Record>* &sub_root, const Record &old_data, bool &shorter);
    //void avl_remove_root(Binary_node<Record>* &sub_root, bool &shorter, Record &predecessor, Binary_node<Record>* &to_delete);
    void left_balance(Binary_node<Record>* &sub_root);
    void right_balance(Binary_node<Record>* &sub_root);
    void rotate_left(Binary_node<Record>* &sub_root);
    void rotate_right(Binary_node<Record>* &sub_root);
-   
 };
 
 
@@ -126,58 +125,15 @@ Error_code AVL_tree<Record>::avl_delete(Binary_node<Record>* &sub_root, const Re
    } else if (target == sub_root->data){
          if (sub_root->left != nullptr && sub_root->right != nullptr){
             std::cout << "finding successor " << std::endl;
-            // Binary_node<Record> *to_delete = sub_root->left;
-            // shorter = true;
-            
-            
-            // predeecessor approach
-            // while (to_delete->right != nullptr)
-            //    to_delete = to_delete->right;
-            // sub_root->data = to_delete->data;
-
-            // successor approach
-
             Binary_node<Record> *to_delete = sub_root->right;
             shorter = true;
-            while (to_delete->left != nullptr){
+            while (to_delete->left != nullptr)
                to_delete = to_delete->left;
-
-            }
             sub_root->data = to_delete->data;
-            
-            //std::cout << "recursion going to right tree" << std::endl;
+         
             avl_delete(sub_root->right, sub_root->data, shorter);
-
-            //std::cout << "balance checking here " << std::endl;
-      //          if (shorter == true){
-      //    switch (sub_root->get_balance()){
-      //       case left_higher:
-      //          left_balance(sub_root);
-      //          if (sub_root->get_balance() == equal_height) {
-      //             shorter = true;
-      //          }
-      //          break;
-      //       case right_higher:
-      //          sub_root->set_balance(equal_height);
-      //          shorter = true;
-      //          break;
-      //       case equal_height:
-      //          // after deleting a node from RST, unbalanced now?
-      //          sub_root->set_balance(left_higher);
-      //          shorter = false; // may need to remove and let it be true
-               
-      //          break;
-      //    }
-
-      // }
-            
-
             if (shorter == true){
             switch (sub_root->get_balance()){
-               // check code here for after deleting a successor 
-               // regular
-               // after rebalnce
-               // multiple rebalnace 
             case right_higher:
                right_balance(sub_root);
                if (sub_root->get_balance() == equal_height) shorter = true;  
@@ -209,20 +165,14 @@ Error_code AVL_tree<Record>::avl_delete(Binary_node<Record>* &sub_root, const Re
             shorter = true;
             Binary_node<Record> *to_delete = sub_root;
             sub_root = sub_root->left;
-            delete to_delete; // swap with child 
+            delete to_delete;
             to_delete = nullptr;
          }
-   
    } else if (target < sub_root->data){
-      //std::cout << "recursion going to left tree" << std::endl;
       avl_delete(sub_root->left, target, shorter);
-
-      //std::cout << "balance checking here " << std::endl;
-
       if (shorter == true){
          switch (sub_root->get_balance()){
             case right_higher:
-               //  test
                right_balance(sub_root);
                if (sub_root->get_balance() == equal_height) {
                   shorter = true;
@@ -233,23 +183,15 @@ Error_code AVL_tree<Record>::avl_delete(Binary_node<Record>* &sub_root, const Re
             case equal_height:
                sub_root->set_balance(right_higher);
                shorter = false;
-               //shorter = true;
-              
                break;
             case left_higher:
                sub_root->set_balance(equal_height);
                shorter = true;
-               
                break;
          }
       }
    } else if (target  > sub_root->data) {
-      
-      //std::cout << "recursion going to right tree" << std::endl;
        avl_delete(sub_root->right, target, shorter);
-
-       std::cout << "balance checking here " << std::endl;
-
        if (shorter == true){
          switch (sub_root->get_balance()){
             case left_higher:
@@ -259,7 +201,6 @@ Error_code AVL_tree<Record>::avl_delete(Binary_node<Record>* &sub_root, const Re
                } else {
                   shorter = false;
                }
-
                break;
             case right_higher:
                sub_root->set_balance(equal_height);
@@ -269,7 +210,6 @@ Error_code AVL_tree<Record>::avl_delete(Binary_node<Record>* &sub_root, const Re
                // after deleting a node from RST, unbalanced now?
                sub_root->set_balance(left_higher);
                shorter = false; // may need to remove and let it be true
-               
                break;
          }
 
@@ -292,16 +232,14 @@ Uses: rotate_left and rotate_right
 */
 {
    Binary_node<Record>* &left_tree = sub_root->left;
-   //single rotation 
+   //single 
    switch (left_tree->get_balance()){
       case equal_height:
          // node would have already been unbalanced
          std::cout << "WARNING: If you see this in an insertion, program error is detected in right_balance" << std::endl;
-         // setting to the height, that it shold be and rotating to the left
          left_tree->set_balance(right_higher);
-         rotate_right(sub_root); // this should be rotate left 
+         rotate_right(sub_root);
          break;
-
       case left_higher: 
          sub_root->set_balance(equal_height); // review here, equal after the rotation 
          left_tree->set_balance(equal_height);
@@ -324,13 +262,11 @@ Uses: rotate_left and rotate_right
             left_tree->set_balance(left_higher);
             break;
       }
-         sub_tree->set_balance(equal_height);
-         rotate_left(left_tree);
-         rotate_right(sub_root);  
-         break; 
+      sub_tree->set_balance(equal_height);
+      rotate_left(left_tree);
+      rotate_right(sub_root);  
+      break; 
    }
-      
-      
 }
 
 
