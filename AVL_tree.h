@@ -205,6 +205,7 @@ Error_code AVL_tree<Record>::avl_delete(Binary_node<Record>* &sub_root, const Re
             case left_higher:
                left_balance(sub_root);
                if (sub_root->get_balance() == equal_height) shorter = true;
+               // shorter = false;
                break;
             case right_higher:
                // 
