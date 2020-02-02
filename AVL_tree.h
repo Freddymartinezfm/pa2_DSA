@@ -9,12 +9,11 @@ class AVL_tree: public Search_tree<Record> {
 public:
    Error_code insert(const Record &new_data);
    Error_code remove(const Record &target);
-   void height();
+   int height();
+   int diff();
 protected:
    Error_code avl_insert(Binary_node<Record>* &sub_root, const Record &new_data, bool &taller);
    Error_code avl_delete(Binary_node<Record>* &sub_root, const Record &target, bool &shorter);
-   //bool check(Binary_node<Record>* &sub_root, const Record &old_data, bool &shorter);
-   //void avl_remove_root(Binary_node<Record>* &sub_root, bool &shorter, Record &predecessor, Binary_node<Record>* &to_delete);
    int height(Binary_node<Record>* &sub_root);
    void left_balance(Binary_node<Record>* &sub_root);
    void right_balance(Binary_node<Record>* &sub_root);
@@ -26,18 +25,16 @@ protected:
 };
 
 template <typename Record>
-void AVL_tree<Record>::height(){
-   // int left_height = height(this->root->left) + 1;
-   // int right_height = height(this->root->right) + 1;
-   int diff = (height(this->root->left) + 1) - (height(this->root->right) + 1);
+int AVL_tree<Record>::height(){
+   std::cout << "height: " << height(this->root) << std::endl;
+   diff();
+   return (height(this->root));
+}
 
-   // std::cout << "left tree: " << left_height << std::endl;  
-   // std::cout << "right tree: " << right_height << std::endl;;  
-   std::cout << "difference: " << std::abs(diff);
-
-
-
-
+template <typename Record>
+int AVL_tree<Record>::diff(){
+   std::cout << "diff: " << std::abs((height(this->root->left)+1) - (height(this->root->right)+1)) << std::endl;
+   return std::abs((height(this->root->left)+1) - (height(this->root->right)+1));
 }
 
 template <typename Record>
@@ -49,6 +46,7 @@ int AVL_tree<Record>::height(Binary_node<Record>* &sub_root){
       int right_height = height(sub_root->right) + 1;
       return left_height > right_height ? left_height : right_height;
    }
+
 } 
 
 
