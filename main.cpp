@@ -19,6 +19,7 @@ int main(){
       cout << "3. Incremental Delete" << endl;
       cout << "4. Delete from File" << endl;
       cout << "p. Print tree" << endl;
+      cout << "b. Print tree balance factor" << endl;
       cout << "x. Exit" << endl;
       cout << "***********************" << endl;
 
@@ -76,6 +77,8 @@ int main(){
       }
       else if (input == "p")
          atree.print();
+      else if (input == "b")
+         atree.height();
       else if(input == "x")
          exit_now = true;
    }
