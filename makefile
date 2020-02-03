@@ -9,4 +9,4 @@ Log.o: Log.cpp Log.h
 #	del -f *.o *.exe
 
 clean:
-	rm -f *.o pa?
+	rm -f *.o pa2
