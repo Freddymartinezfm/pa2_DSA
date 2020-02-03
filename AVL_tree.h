@@ -418,7 +418,7 @@ Pre:  sub_root points to a subtree of the AVL_tree.
 Post: 
 */
 {
-    std::string mTAG {"rotate_right"};
+   std::string mTAG {"rotate_right"};
    Log::m(TAG, mTAG);
    Binary_node<Record>* left_tree = sub_root->left;
   
