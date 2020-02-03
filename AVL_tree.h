@@ -22,6 +22,7 @@ protected:
 
    
    int count = 0;
+   std::string TAG {"AVL_tree"};
 };
 
 template <typename Record>
@@ -62,6 +63,7 @@ Uses: avl_insert.
 */
 {
    bool taller;
+
    return avl_insert(this->root, new_data, taller);
 }
 
@@ -97,6 +99,10 @@ Uses: Methods of struct AVL_node; functions avl_insert
       recursively, left_balance, and right_balance.
 */
 {
+
+   std::string mTAG {"avl_insert"};
+   m(TAG, mTAG);
+   
    Error_code result = success;
    if (sub_root == NULL) {
       sub_root = new AVL_node<Record>(new_data);

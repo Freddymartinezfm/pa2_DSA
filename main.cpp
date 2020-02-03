@@ -19,7 +19,7 @@ int main(){
       cout << "3. Incremental Delete" << endl;
       cout << "4. Delete from File" << endl;
       cout << "p. Print tree" << endl;
-      cout << "b. Print tree balance factor" << endl;
+      cout << "b. Print Longest Path Height" << endl;
       cout << "x. Exit" << endl;
       cout << "***********************" << endl;
 
