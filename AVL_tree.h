@@ -3,6 +3,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include "Search_tree.h"
+#include "Log.h"
 
 template <class Record>
 class AVL_tree: public Search_tree<Record> {
@@ -27,6 +28,9 @@ protected:
 
 template <typename Record>
 int AVL_tree<Record>::height(){
+   std::string mTAG {"height"};
+   Log::m(TAG, mTAG);
+
    std::cout << "height: " << height(this->root) << std::endl;
    diff();
    return (height(this->root));
@@ -101,8 +105,8 @@ Uses: Methods of struct AVL_node; functions avl_insert
 {
 
    std::string mTAG {"avl_insert"};
-   m(TAG, mTAG);
-   
+   Log::m(TAG, mTAG);
+
    Error_code result = success;
    if (sub_root == NULL) {
       sub_root = new AVL_node<Record>(new_data);
@@ -159,6 +163,9 @@ Uses: Methods of struct AVL_node; functions avl_insert
 
 template <class Record>
 Error_code AVL_tree<Record>::avl_delete(Binary_node<Record>* &sub_root, const Record &target, bool &shorter) {
+
+   std::string mTAG {"avl_delete"};
+   Log::m(TAG, mTAG);
 
    Error_code result = success;
    if (sub_root == nullptr){
@@ -273,6 +280,8 @@ Uses: rotate_left and rotate_right
       
 */
 {
+   std::string mTAG {"left_balance"};
+   Log::m(TAG, mTAG);
    Binary_node<Record>* &left_tree = sub_root->left;
    //single 
    switch (left_tree->get_balance()){
@@ -322,6 +331,8 @@ Uses: Methods of struct AVL_node;
       functions  rotate_right and rotate_left.
 */
 {
+   std::string mTAG {"right_balance"};
+   Log::m(TAG, mTAG);
    Binary_node<Record>* &right_tree = sub_root->right;
    // case right_higher: sigle left rotation
    // O  ub --> subroot
@@ -386,6 +397,8 @@ Post: sub_root is reset to point to its former right child, and the former
       sub_root node is the left child of the new sub_root node.
 */
 {
+   std::string mTAG {"rotate_left"};
+   Log::m(TAG, mTAG);
    if (sub_root == NULL || sub_root->right == NULL)     //  impossible cases
       cout << "WARNING: program error detected in rotate_left" << endl;
    else {
@@ -405,6 +418,8 @@ Pre:  sub_root points to a subtree of the AVL_tree.
 Post: 
 */
 {
+    std::string mTAG {"rotate_right"};
+   Log::m(TAG, mTAG);
    Binary_node<Record>* left_tree = sub_root->left;
   
    if (sub_root == NULL || sub_root->left == NULL)

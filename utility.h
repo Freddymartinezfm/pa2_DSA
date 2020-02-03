@@ -14,8 +14,3 @@ int string_to_int(string s){
    instr >> n;
    return n;
 }
-
-
-void m(std::string TAG, std::string mTAG){
-	std::cout << TAG << ": " << mTAG << "()" << std::endl;
-}
