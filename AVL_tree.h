@@ -1,4 +1,6 @@
-#pragma once
+#ifndef AVL_TREE
+#define AVL_TREE
+
 #include <math.h>
 #include <iostream>
 #include <stdlib.h>
@@ -167,6 +169,8 @@ Error_code AVL_tree<Record>::avl_delete(Binary_node<Record>* &sub_root, const Re
    std::string mTAG {"avl_delete"};
    Log::m(TAG, mTAG);
 
+   
+
    Error_code result = success;
    if (sub_root == nullptr){
       shorter = false;
@@ -185,20 +189,17 @@ Error_code AVL_tree<Record>::avl_delete(Binary_node<Record>* &sub_root, const Re
             switch (sub_root->get_balance()){
             case right_higher:
                right_balance(sub_root);
-               if (sub_root->get_balance() == equal_height) shorter = true;  
+               if (sub_root->get_balance() == equal_height) shorter = true;
                shorter = false;             
                break;
             case equal_height:
                sub_root->set_balance(left_higher);
                shorter = false;
-              
                break;
             case left_higher:
                sub_root->set_balance(equal_height);
                left_balance(sub_root);
                if (sub_root->get_balance() == equal_height) shorter = true; 
-               shorter = true;
-               
                break;
             }
          }
@@ -256,12 +257,10 @@ Error_code AVL_tree<Record>::avl_delete(Binary_node<Record>* &sub_root, const Re
                shorter = true;
                break;
             case equal_height:
-               // after deleting a node from RST, unbalanced now?
                sub_root->set_balance(left_higher);
-               shorter = false; // may need to remove and let it be true
+               shorter = false;
                break;
          }
-
       }
    } 
    return success;
@@ -309,7 +308,7 @@ Uses: rotate_left and rotate_right
             left_tree->set_balance(left_higher);
             break;
          case right_higher:
-            sub_root->set_balance(equal_height); // balance before or current changed to lh  
+            sub_root->set_balance(equal_height);
             left_tree->set_balance(left_higher);
             break;
       }
@@ -348,7 +347,7 @@ Uses: Methods of struct AVL_node;
       break;
 
 
-   case equal_height:  //  impossible case
+   case equal_height: 
       cout << "WARNING: If you see this in an insertion, program error is detected in right_balance" << endl;
       right_tree->set_balance(left_higher);
       rotate_left(sub_root);
@@ -399,7 +398,7 @@ Post: sub_root is reset to point to its former right child, and the former
 {
    std::string mTAG {"rotate_left"};
    Log::m(TAG, mTAG);
-   if (sub_root == NULL || sub_root->right == NULL)     //  impossible cases
+   if (sub_root == NULL || sub_root->right == NULL)
       cout << "WARNING: program error detected in rotate_left" << endl;
    else {
       Binary_node<Record> *right_tree = sub_root->right;
@@ -430,3 +429,5 @@ Post:
       sub_root = left_tree;
    }
 }
+
+#endif
