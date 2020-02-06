@@ -1,4 +1,3 @@
-
 #include "utility.h"
 #include "Binary_node.h"
 #include "Binary_tree.h"
