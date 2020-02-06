@@ -175,6 +175,7 @@ Error_code AVL_tree<Record>::avl_delete(Binary_node<Record>* &sub_root, const Re
    if (sub_root == nullptr){
       shorter = false;
       result = not_present;
+      return result;
    } else if (target == sub_root->data){
          if (sub_root->left != nullptr && sub_root->right != nullptr){
             std::cout << "finding successor " << std::endl;
@@ -189,7 +190,7 @@ Error_code AVL_tree<Record>::avl_delete(Binary_node<Record>* &sub_root, const Re
             switch (sub_root->get_balance()){
             case right_higher:
                right_balance(sub_root);
-               if (sub_root->get_balance() == equal_height) shorter = true;
+                (sub_root->get_balance() == equal_height) ? shorter = true : shorter = false;
                shorter = false;             
                break;
             case equal_height:
@@ -199,7 +200,7 @@ Error_code AVL_tree<Record>::avl_delete(Binary_node<Record>* &sub_root, const Re
             case left_higher:
                sub_root->set_balance(equal_height);
                left_balance(sub_root);
-               if (sub_root->get_balance() == equal_height) shorter = true; 
+                (sub_root->get_balance() == equal_height) ? shorter = true : shorter = false; 
                break;
             }
          }
@@ -210,6 +211,7 @@ Error_code AVL_tree<Record>::avl_delete(Binary_node<Record>* &sub_root, const Re
             Binary_node<Record> *to_delete = sub_root;
             sub_root = sub_root->right;
             delete to_delete;
+
             to_delete = nullptr;
          } else if (sub_root->right == nullptr) {
             shorter = true;
@@ -224,11 +226,7 @@ Error_code AVL_tree<Record>::avl_delete(Binary_node<Record>* &sub_root, const Re
          switch (sub_root->get_balance()){
             case right_higher:
                right_balance(sub_root);
-               if (sub_root->get_balance() == equal_height) {
-                  shorter = true;
-               } else {
-                  shorter = false;
-               }               
+               (sub_root->get_balance() == equal_height) ? shorter = true : shorter = false;
                break;
             case equal_height:
                sub_root->set_balance(right_higher);
@@ -246,11 +244,12 @@ Error_code AVL_tree<Record>::avl_delete(Binary_node<Record>* &sub_root, const Re
          switch (sub_root->get_balance()){
             case left_higher:
                left_balance(sub_root);
-               if (sub_root->get_balance() == equal_height) {
-                  shorter = true;
-               } else {
-                  shorter = false;
-               }
+                (sub_root->get_balance() == equal_height) ? shorter = true : shorter = false;
+               // if (sub_root->get_balance() == equal_height) {
+               //    shorter = true;
+               // } else {
+               //    shorter = false;
+               // }
                break;
             case right_higher:
                sub_root->set_balance(equal_height);
@@ -333,12 +332,13 @@ Uses: Methods of struct AVL_node;
    std::string mTAG {"right_balance"};
    Log::m(TAG, mTAG);
    Binary_node<Record>* &right_tree = sub_root->right;
-   // case right_higher: sigle left rotation
-   // O  ub --> subroot
-   //  \
-   //   O  rh  --> right_tree
-   //    \
-   //     O
+   /* case right_higher: sigle left rotation
+      O  ub --> subroot
+       \
+        O  rh  --> right_tree
+         \
+          O
+   */
    switch (right_tree->get_balance()) {
    case right_higher:  //  single left rotation
       sub_root->set_balance(equal_height);
@@ -353,12 +353,13 @@ Uses: Methods of struct AVL_node;
       rotate_left(sub_root);
       break;
 
-   // case left_higher: double rotation left
-   // O ub --> sub_root
-   //  \
-   //   O lh --> right_tree
-   //  /
-   // O three cases --> sub_tree
+   /* case left_higher: double rotation left
+      O ub --> sub_root
+        \
+        O lh --> right_tree
+       /
+      O three cases --> sub_tree
+   */
    case left_higher:                           
       Binary_node<Record> *sub_tree = right_tree->left;
 	  //set balance of sub_root and right_tree assuming rotation is done
