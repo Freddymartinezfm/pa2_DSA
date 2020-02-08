@@ -14,6 +14,7 @@ public:
    Error_code remove(const Record &target);
    int height();
    int diff();
+   void toggle_logs();
 protected:
    Error_code avl_insert(Binary_node<Record>* &sub_root, const Record &new_data, bool &taller);
    Error_code avl_delete(Binary_node<Record>* &sub_root, const Record &target, bool &shorter);
@@ -26,12 +27,27 @@ protected:
    
    int count = 0;
    std::string TAG {"AVL_tree"};
+   bool show_logs = false;
 };
+
+
+template <typename T>
+void AVL_tree<T>::toggle_logs(){
+   if (show_logs) {
+      show_logs = false;
+   } else if (!show_logs){
+      show_logs = true;
+   }
+   // if (show_logs == false) show_logs = true;
+   
+   std::cout << std::boolalpha << "logs set: " << show_logs;
+}
+
 
 template <typename Record>
 int AVL_tree<Record>::height(){
    std::string mTAG {"height"};
-   Log::m(TAG, mTAG);
+   if (show_logs) Log::m(TAG, mTAG);
 
    std::cout << "height: " << height(this->root) << std::endl;
    diff();
@@ -69,7 +85,6 @@ Uses: avl_insert.
 */
 {
    bool taller;
-
    return avl_insert(this->root, new_data, taller);
 }
 
@@ -105,10 +120,9 @@ Uses: Methods of struct AVL_node; functions avl_insert
       recursively, left_balance, and right_balance.
 */
 {
-
    std::string mTAG {"avl_insert"};
-   Log::m(TAG, mTAG);
-
+   if (show_logs) Log::m(TAG, mTAG);
+      
    Error_code result = success;
    if (sub_root == NULL) {
       sub_root = new AVL_node<Record>(new_data);
@@ -165,11 +179,8 @@ Uses: Methods of struct AVL_node; functions avl_insert
 
 template <class Record>
 Error_code AVL_tree<Record>::avl_delete(Binary_node<Record>* &sub_root, const Record &target, bool &shorter) {
-
    std::string mTAG {"avl_delete"};
-   Log::m(TAG, mTAG);
-
-   
+   if (show_logs) Log::m(TAG, mTAG);
 
    Error_code result = success;
    if (sub_root == nullptr){
@@ -279,7 +290,8 @@ Uses: rotate_left and rotate_right
 */
 {
    std::string mTAG {"left_balance"};
-   Log::m(TAG, mTAG);
+   if (show_logs) Log::m(TAG, mTAG);
+      
    Binary_node<Record>* &left_tree = sub_root->left;
    //single 
    switch (left_tree->get_balance()){
@@ -330,7 +342,8 @@ Uses: Methods of struct AVL_node;
 */
 {
    std::string mTAG {"right_balance"};
-   Log::m(TAG, mTAG);
+   if (show_logs)Log::m(TAG, mTAG);
+  
    Binary_node<Record>* &right_tree = sub_root->right;
    /* case right_higher: sigle left rotation
       O  ub --> subroot
@@ -398,7 +411,7 @@ Post: sub_root is reset to point to its former right child, and the former
 */
 {
    std::string mTAG {"rotate_left"};
-   Log::m(TAG, mTAG);
+   if (show_logs) Log::m(TAG, mTAG);
    if (sub_root == NULL || sub_root->right == NULL)
       cout << "WARNING: program error detected in rotate_left" << endl;
    else {
@@ -419,7 +432,10 @@ Post:
 */
 {
    std::string mTAG {"rotate_right"};
-   Log::m(TAG, mTAG);
+   if (show_logs) Log::m(TAG, mTAG);
+   
+   
+
    Binary_node<Record>* left_tree = sub_root->left;
   
    if (sub_root == NULL || sub_root->left == NULL)

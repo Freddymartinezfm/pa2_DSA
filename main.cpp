@@ -9,6 +9,7 @@
 int main(){
    string input = "";
    bool exit_now = false;
+
    AVL_tree<int> atree;
    while(!exit_now){
       cout << endl;
@@ -20,6 +21,7 @@ int main(){
       cout << "4. Delete from File" << endl;
       cout << "p. Print tree" << endl;
       cout << "b. Print Longest Path Height" << endl;
+      cout << "s. Toggle Logs " << endl;
       cout << "x. Exit" << endl;
       cout << "***********************" << endl;
 
@@ -81,6 +83,8 @@ int main(){
          atree.height();
       else if(input == "x")
          exit_now = true;
+      else if(input == "s")
+         atree.toggle_logs();
    }
    
 }
