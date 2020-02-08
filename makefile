@@ -12,10 +12,8 @@ main.o: main.cpp $(HEADERS)
 	$(CC) $(FLAGS) -c main.cpp
 clean:
 ifeq ($(TYPE), win)
-	
 	del *.o pa2
-else 
-	
+else
 	rm *.o pa2
 endif
 	
